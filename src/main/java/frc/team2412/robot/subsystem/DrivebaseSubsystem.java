@@ -1,5 +1,7 @@
 package frc.team2412.robot.subsystem;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.music.Orchestra;
 import com.google.errorprone.annotations.concurrent.GuardedBy;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -110,6 +112,9 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
     private final NetworkTableEntry isFieldOrientedEntry;
     private final NetworkTableEntry speedModifier;
 
+    // Music
+    private final Orchestra orchestra;
+
     private final Field2d field = new Field2d();
 
     public DrivebaseSubsystem(SwerveModule fl, SwerveModule fr, SwerveModule bl, SwerveModule br, Pigeon g,
@@ -177,6 +182,10 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
         tab.addNumber("Average Velocity", this::getAverageAbsoluteValueVelocity);
 
         isFieldOrientedEntry = tab.add("Field Oriented", true).getEntry();
+
+        // init the orchestra object for playing music
+        orchestra = new Orchestra();
+        initOrchestra();
 
         defaultX = gyroscope.getAxis(Pigeon.Axis.ROLL);
         defaultY = gyroscope.getAxis(Pigeon.Axis.PITCH);
@@ -382,6 +391,26 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
 
     public void follow(Path p) {
         follower.follow(new Trajectory(p, TRAJECTORY_CONSTRAINTS, 12.0));
+    }
+
+    // --------------------------------
+    // music stuff down here
+    // --------------------------------
+
+    private void initOrchestra() {
+        for (SwerveModule module : modules) {
+            orchestra.addInstrument((TalonFX) module.getDriveMotor());
+            orchestra.addInstrument((TalonFX) module.getSteerMotor());
+        }
+    }
+
+    public void playMusic(String path) {
+        orchestra.loadMusic(path);
+        orchestra.play();
+    }
+
+    public void stopMusic() {
+        orchestra.stop();
     }
 
 }

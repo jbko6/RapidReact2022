@@ -26,6 +26,7 @@ import frc.team2412.robot.commands.drive.DriveCommand;
 import frc.team2412.robot.subsystem.DrivebaseSubsystem;
 import frc.team2412.robot.subsystem.TestingSubsystem;
 import frc.team2412.robot.util.AutonomousTrajectories;
+import frc.team2412.robot.util.MusicChooser;
 import frc.team2412.robot.util.AutonomousChooser;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.Logger;
@@ -52,6 +53,7 @@ public class Robot extends TimedRobot implements Loggable {
 
     private UpdateManager updateManager;
     private AutonomousChooser autonomousChooser;
+    private MusicChooser musicChooser;
     final private RobotType robotType;
 
     private Thread controlAuto;
@@ -110,6 +112,7 @@ public class Robot extends TimedRobot implements Loggable {
 
         autonomousChooser = new AutonomousChooser(subsystems,
                 new AutonomousTrajectories(DrivebaseSubsystem.DriveConstants.TRAJECTORY_CONSTRAINTS));
+        musicChooser = new MusicChooser(subsystems.drivebaseSubsystem);
         Logger.configureLoggingAndConfig(subsystems, false);
 
         CommandScheduler.getInstance()
