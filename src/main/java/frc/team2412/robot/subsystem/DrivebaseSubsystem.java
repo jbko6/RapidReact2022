@@ -47,17 +47,17 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
         public static final double WHEELBASE = 1.0;
 
         public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = new DrivetrainFeedforwardConstants(
-                0.96561,
-                0.044938,
-                0.011787);
+                0.169,
+                0.0574,
+                0.00275);
 
         // these values need to be found
         public static final TrajectoryConstraint[] TRAJECTORY_CONSTRAINTS = {
                 new FeedforwardConstraint(11.0, FEEDFORWARD_CONSTANTS.getVelocityConstant(),
                         FEEDFORWARD_CONSTANTS.getAccelerationConstant(), false), // old value was 11.0
-                new MaxAccelerationConstraint(0.5 * 12.0), // old value was 12.5 * 12.0
-                new MaxVelocityConstraint(1.0 * 12.0),
-                new CentripetalAccelerationConstraint(1.0 * 12.0), // old value was 15 * 12.0
+                new MaxAccelerationConstraint(5 * 12.0), // old value was 12.5 * 12.0
+                new MaxVelocityConstraint(3 * 12.0),
+                new CentripetalAccelerationConstraint(15.0 * 12.0), // old value was 15 * 12.0
         };
 
         public static final int MAX_LATENCY_COMPENSATION_MAP_ENTRIES = 25;
@@ -72,8 +72,8 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
     }
 
     private final HolonomicMotionProfiledTrajectoryFollower follower = new HolonomicMotionProfiledTrajectoryFollower(
-            new PidConstants(0.069834, 0.0, 0.0),
-            new PidConstants(3.0, 0.0, 0.0),
+            new PidConstants(0.111, 0.0, 0.0),
+            new PidConstants(5.0, 0.0, 0.0),
             new HolonomicFeedforward(FEEDFORWARD_CONSTANTS));
 
     private final SwerveKinematics swerveKinematics = new SwerveKinematics(
