@@ -32,7 +32,6 @@ import org.frcteam2910.common.robot.drivers.NavX;
 import org.frcteam2910.common.robot.drivers.Pigeon;
 import org.frcteam2910.common.util.*;
 
-import java.nio.BufferUnderflowException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,17 +46,17 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
         public static final double WHEELBASE = 1.0;
 
         public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = new DrivetrainFeedforwardConstants(
-                0.169,
-                0.0574,
-                0.00275);
+                0.0574, // velocity
+                0.00275, // acceleration
+                0.169); // static
 
         // these values need to be found
         public static final TrajectoryConstraint[] TRAJECTORY_CONSTRAINTS = {
-                new FeedforwardConstraint(11.0, FEEDFORWARD_CONSTANTS.getVelocityConstant(),
-                        FEEDFORWARD_CONSTANTS.getAccelerationConstant(), false), // old value was 11.0
-                new MaxAccelerationConstraint(5 * 12.0), // old value was 12.5 * 12.0
-                new MaxVelocityConstraint(3 * 12.0),
-                new CentripetalAccelerationConstraint(15.0 * 12.0), // old value was 15 * 12.0
+                new FeedforwardConstraint(11, FEEDFORWARD_CONSTANTS.getVelocityConstant(),
+                        FEEDFORWARD_CONSTANTS.getAccelerationConstant(), true), // old value was 11.0
+                new MaxAccelerationConstraint(20.0), // old value was 12.5 * 12.0
+                new MaxVelocityConstraint(30.0),
+                new CentripetalAccelerationConstraint(20.0), // old value was 15 * 12.0
         };
 
         public static final int MAX_LATENCY_COMPENSATION_MAP_ENTRIES = 25;

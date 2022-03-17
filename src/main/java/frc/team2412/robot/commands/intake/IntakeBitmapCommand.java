@@ -79,8 +79,6 @@ public class IntakeBitmapCommand extends CommandBase {
 
     }
 
-    Bitmap actualValue = Bitmap.A;
-
     @Override
     public void execute() {
 
@@ -91,29 +89,15 @@ public class IntakeBitmapCommand extends CommandBase {
 
         for (Bitmap value : Bitmap.values()) {
             if (value.equals(ingestSensor, feederSensor, ingestColor, feederColor)) {
-                actualValue = value;
+                currentState = value;
                 break;
-
-                // double yaw = shooterVisionSubsystem.getDistance() + shooterSubsystem.getTurretAngleBias();
-                // shooterSubsystem.updateTurretAngle(yaw);
-
-                // if (value.shooterMisfire) {
-                // shooterSubsystem.setHoodAngle(0);
-                // shooterSubsystem.setFlywheelVelocity(MISFIRE_VELOCITY);
-
-                // } else {
-                // double distance = shooterVisionSubsystem.getDistance() + shooterSubsystem.getDistanceBias();
-                // ShooterDataDistancePoint shooterData = ShooterConstants.dataPoints.getInterpolated(distance);
-                // shooterSubsystem.setHoodAngle(shooterData.getAngle());
-                // shooterSubsystem.setFlywheelRPM(shooterData.getRPM());
-                // }
             }
         }
 
-        intakeSubsystem.setSpeed(actualValue.intakeMotorSpeed);
-        indexSubsystem.setSpeed(actualValue.ingestMotorSpeed, actualValue.feederMotorSpeed);
+        intakeSubsystem.setSpeed(currentState.intakeMotorSpeed);
+        indexSubsystem.setSpeed(currentState.ingestMotorSpeed, currentState.feederMotorSpeed);
 
-        System.out.println(actualValue.shooterMisfire);
+        System.out.println(currentState.shooterMisfire);
 
     }
 
