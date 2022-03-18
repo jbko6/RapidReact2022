@@ -1,6 +1,7 @@
 package frc.team2412.robot.subsystem;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import static frc.team2412.robot.Hardware.*;
+
 import com.google.errorprone.annotations.concurrent.GuardedBy;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -10,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -61,18 +63,16 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
 
         public static final int MAX_LATENCY_COMPENSATION_MAP_ENTRIES = 25;
 
-        public static final boolean ANTI_TIP_DEFAULT = true;
+        public static final boolean ANTI_TIP_DEFAULT = false;
 
         public static final boolean FIELD_CENTRIC_DEFAULT = true;
 
-        public static final double TIP_P = 0.1, TIP_F = 0.002, TIP_TOLERANCE = 5;
-
-        public static final Rotation2 PRACTICE_BOT_DRIVE_OFFSET = Rotation2.fromDegrees(180), COMP_BOT_DRIVE_OFFSET = Rotation2.fromDegrees(90);
+        public static final double TIP_P = 0.1, TIP_F = 0, TIP_TOLERANCE = 10;
     }
 
     private final HolonomicMotionProfiledTrajectoryFollower follower = new HolonomicMotionProfiledTrajectoryFollower(
-            new PidConstants(0.111, 0.0, 0.0),
-            new PidConstants(5.0, 0.0, 0.0),
+            new PidConstants(0.1, 0.0, 0.0),
+            new PidConstants(0, 0.0, 0.0),
             new HolonomicFeedforward(FEEDFORWARD_CONSTANTS));
 
     private final SwerveKinematics swerveKinematics = new SwerveKinematics(
@@ -127,19 +127,24 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
 
     private final PFFController<Vector2> tipController;
 
-    public DrivebaseSubsystem(SwerveModule fl, SwerveModule fr, SwerveModule bl, SwerveModule br, Gyroscope g,
-            double moduleMaxVelocityMetersPerSec) {
+    public DrivebaseSubsystem() {
+        var comp = Robot.getInstance().isCompetition();
+
         synchronized (sensorLock) {
-            gyroscope = g;
-            if (g instanceof NavX)
+            gyroscope = comp ? new Pigeon(GYRO_PORT) : new NavX(SerialPort.Port.kMXP);
+            if (gyroscope instanceof Pigeon)
                 gyroscope.setInverted(true);
             SmartDashboard.putData("Field", field);
         }        
 
         ShuffleboardTab tab = Shuffleboard.getTab("Drivebase");
 
-        modules = new SwerveModule[] { fl, fr, bl, br };
-        this.moduleMaxVelocityMetersPerSec = moduleMaxVelocityMetersPerSec;
+        boolean supportAbsoluteEncoder = comp && !Robot.isSimulation();
+        modules = new SwerveModule[] { FRONT_LEFT_CONFIG.create(supportAbsoluteEncoder),
+                FRONT_RIGHT_CONFIG.create(supportAbsoluteEncoder),
+                BACK_LEFT_CONFIG.create(supportAbsoluteEncoder),
+                BACK_RIGHT_CONFIG.create(supportAbsoluteEncoder) };
+        moduleMaxVelocityMetersPerSec = MODULE_MAX_VELOCITY_METERS_PER_SEC;
 
         odometryXEntry = tab.add("X", 0.0)
                 .withPosition(0, 0)
@@ -183,7 +188,7 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
             return signal.getRotation() * RobotController.getBatteryVoltage();
         });
 
-        speedModifier = tab.add("Speed Modifier", 1.0f)
+        speedModifier = tab.add("Speed Modifier", 0.5f)
                 .withPosition(2, 1)
                 .withSize(2, 1)
                 .withWidget(BuiltInWidgets.kNumberSlider)
@@ -193,13 +198,13 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
         tab.addNumber("Average Velocity", this::getAverageAbsoluteValueVelocity);
 
         antiTip = tab.add("Anti Tip", ANTI_TIP_DEFAULT)
-                .withPosition(2, 2)
+                .withPosition(3, 1)
                 .withSize(2, 1)
                 .withWidget(BuiltInWidgets.kToggleSwitch)
                 .getEntry();
 
         fieldCentric = tab.add("Field Centric", FIELD_CENTRIC_DEFAULT)
-                .withPosition(2, 3)
+                .withPosition(3, 2)
                 .withSize(2, 1)
                 .withWidget(BuiltInWidgets.kToggleSwitch)
                 .getEntry();
@@ -229,8 +234,8 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
     public Vector2 getGyroscopeXY() {
         synchronized (sensorLock) {
             if (gyroscope instanceof Pigeon)
-                return new Vector2(((Pigeon) gyroscope).getAxis(Pigeon.Axis.ROLL),
-                        ((Pigeon) gyroscope).getAxis(Pigeon.Axis.PITCH)).scale(180 / Math.PI);
+                return new Vector2(-((Pigeon) gyroscope).getAxis(Pigeon.Axis.PITCH),
+                        ((Pigeon) gyroscope).getAxis(Pigeon.Axis.ROLL)).scale(180 / Math.PI);
             if (gyroscope instanceof NavX)
                 return new Vector2(((NavX) gyroscope).getAxis(NavX.Axis.ROLL),
                         ((NavX) gyroscope).getAxis(NavX.Axis.PITCH)).scale(180 / Math.PI);
@@ -269,7 +274,8 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
 
     public Rotation2 getAngle() {
         synchronized (kinematicsLock) {
-            return pose.rotation.inverse();
+            return getPose().rotation;
+            // return Robot.getInstance().isCompetition() ? getPose().rotation.inverse() : getPose().rotation;
         }
     }
 
@@ -299,6 +305,7 @@ public class DrivebaseSubsystem extends SubsystemBase implements UpdateManager.U
         synchronized (sensorLock) {
             gyroscope.setAdjustmentAngle(
                     gyroscope.getUnadjustedAngle().rotateBy(angle.inverse()));
+            tipController.setTargetPosition(getGyroscopeXY());
         }
     }
 

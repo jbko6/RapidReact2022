@@ -23,7 +23,12 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
+<<<<<<< HEAD
         drivebaseSubsystem.drive(new Vector2(-forward.get(false), strafe.get(false)), -rotation.get(false));
+=======
+        drivebaseSubsystem.drive(new Vector2(forward.get(false), -strafe.get(false)), -rotation.get(false),
+                drivebaseSubsystem.getFieldCentric());
+>>>>>>> 92da4f407375e4428d28072cbdb8aaab65dac212
     }
 
     @Override
