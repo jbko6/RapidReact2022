@@ -37,6 +37,8 @@ import frc.team2412.robot.util.MACAddress;
 import frc.team2412.robot.util.autonomous.AutonomousChooser;
 import io.github.oblarg.oblog.Logger;
 
+import com.pathplanner.lib.server.PathPlannerServer;
+
 public class Robot extends TimedRobot {
     /**
      * Singleton Stuff
@@ -221,6 +223,8 @@ public class Robot extends TimedRobot {
         JackStealFourBallAutoCommand.StealFourBallConstants.init();
         JackStealThreeBallAutoCommand.StealThreeBallConstants.init();
         JackStealThreeBallCompatAutoCommand.StealThreeBallConstants.init();
+
+        PathPlannerServer.startServer(5811);
     }
 
     @Override

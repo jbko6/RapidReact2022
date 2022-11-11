@@ -5,6 +5,8 @@ import static frc.team2412.robot.Controls.ControlConstants.*;
 import java.util.function.BooleanSupplier;
 
 import frc.team2412.robot.commands.drive.DriveCommand;
+import frc.team2412.robot.commands.drive.WPILibDriveCommand;
+
 import org.frcteam2910.common.math.Rotation2;
 import org.frcteam2910.common.robot.input.Controller;
 import org.frcteam2910.common.robot.input.DPadButton.Direction;
@@ -112,7 +114,7 @@ public class Controls {
     }
 
     public void bindDriveControls() {
-        subsystems.drivebaseSubsystem.setDefaultCommand(new DriveCommand(subsystems.drivebaseSubsystem,
+        subsystems.drivebaseSubsystem.setDefaultCommand(new WPILibDriveCommand(subsystems.wpilibdrivebasesubsystem,
                 driveController.getLeftYAxis(), driveController.getLeftXAxis(),
                 driveController.getRightXAxis()));
         resetDriveGyroButton.whenPressed(() -> subsystems.drivebaseSubsystem.resetGyroAngle(Rotation2.ZERO));

@@ -59,7 +59,7 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
 
         // Placeholder gearing constant
         public static final double HOOD_REVS_TO_DEGREES = 1 / (5.23 * 5.23) * 20 / 84 * 360;// 45 / 9.78;
-        public static final double MAX_HOOD_ANGLE = 40.0;
+        public static final double MAX_HOOD_ANGLE = 22.0;
         public static final double MIN_HOOD_ANGLE = 1;
         public static final double HOOD_ANGLE_TOLERANCE = 1;
         public static final double HOOD_ALLOWED_ERROR = 2;
@@ -88,7 +88,9 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
 
     /* INSTANCE VARIABLES */
 
+    @Log.MotorController
     private final WPI_TalonFX flywheelMotor1;
+    @Log.MotorController
     private final WPI_TalonFX flywheelMotor2;
 
     private final WPI_TalonFX turretMotor;
@@ -111,7 +113,7 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
     private double targetHoodAngle;
     private double turretAngleBias;
     private double turretTestAngle;
-    private double distanceBias = 10;
+    private double distanceBias = 0;
 
     /**
      * Constructor for shooter subsystem.
@@ -159,7 +161,7 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
         turretMotor.configReverseSoftLimitEnable(true);
         turretMotor.configSupplyCurrentLimit(TURRET_CURRENT_LIMIT);
         turretMotor.setNeutralMode(NeutralMode.Brake);
-        turretMotor.configClosedLoopPeakOutput(TURRET_SLOT_ID, 0.3);
+        turretMotor.configClosedLoopPeakOutput(TURRET_SLOT_ID, 0.20);
         turretMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, TURRET_SLOT_ID, 0);
 
         turretMotor.configVoltageCompSaturation(BATTERY_VOLTAGE);
@@ -244,7 +246,7 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
         turretMotor.config_kD(TURRET_SLOT_ID, turretD);
     }
 
-    @Config(name = "Distance bias", columnIndex = 5, rowIndex = 2, defaultValueNumeric = 10)
+    @Config(name = "Distance bias", columnIndex = 5, rowIndex = 2, defaultValueNumeric = 0)
     private void setDistanceBias(double newBias) {
         distanceBias = newBias;
     }
@@ -331,8 +333,14 @@ public class ShooterSubsystem extends SubsystemBase implements Loggable {
      *
      * @return The velocity of the flywheel motors.
      */
+    @Log(name = "Flywheel1 vel")
     public double getFlywheelVelocity() {
         return flywheelMotor1.getSelectedSensorVelocity();
+    }
+
+    @Log(name = "Flywheel2 vel")
+    public double getFlywheel2Velocity() {
+        return flywheelMotor2.getSelectedSensorVelocity();
     }
 
     // Hood

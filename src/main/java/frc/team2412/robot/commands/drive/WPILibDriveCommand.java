@@ -3,17 +3,18 @@ package frc.team2412.robot.commands.drive;
 import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.input.Axis;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team2412.robot.subsystem.DrivebaseSubsystem;
 import frc.team2412.robot.subsystem.WPILibDrivebaseSubsystem;
 
-public class DriveCommand extends CommandBase {
-    private final DrivebaseSubsystem drivebaseSubsystem;
+public class WPILibDriveCommand extends CommandBase {
+    private final WPILibDrivebaseSubsystem drivebaseSubsystem;
     private final Axis forward;
     private final Axis strafe;
     private final Axis rotation;
 
-    public DriveCommand(DrivebaseSubsystem drivebaseSubsystem, Axis forward, Axis strafe, Axis rotation) {
+    public WPILibDriveCommand(WPILibDrivebaseSubsystem drivebaseSubsystem, Axis forward, Axis strafe, Axis rotation) {
         this.drivebaseSubsystem = drivebaseSubsystem;
         this.forward = forward;
         this.strafe = strafe;
@@ -27,7 +28,7 @@ public class DriveCommand extends CommandBase {
         double x = deadbandCorrection(forward.get(false));
         double y = deadbandCorrection(-strafe.get(false));
         double rot = deadbandCorrection(-rotation.get(false)) / 2;
-        drivebaseSubsystem.drive(new Vector2(x, y), rot);
+        drivebaseSubsystem.drive(x, y, Rotation2d.fromDegrees(rot), false);
     }
 
     public double deadbandCorrection(double input) {

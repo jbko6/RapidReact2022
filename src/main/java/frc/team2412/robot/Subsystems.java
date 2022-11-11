@@ -7,23 +7,24 @@ import io.github.oblarg.oblog.Loggable;
 
 public class Subsystems implements Loggable {
     public static class SubsystemConstants {
-        public static final boolean CLIMB_ENABLED = true;
+        public static final boolean CLIMB_ENABLED = false;
 
         public static final boolean POST_CLIMB_ENABLED = false;
 
         public static final boolean DRIVE_ENABLED = true;
-        public static final boolean DRIVER_VIS_ENABLED = true;
-        public static final boolean SHOOTER_VISION_ENABLED = true;
-        public static final boolean INDEX_ENABLED = true;
-        public static final boolean INTAKE_ENABLED = true;
-        public static final boolean SHOOTER_ENABLED = true;
+        public static final boolean DRIVER_VIS_ENABLED = false;
+        public static final boolean SHOOTER_VISION_ENABLED = false;
+        public static final boolean INDEX_ENABLED = false;
+        public static final boolean INTAKE_ENABLED = false;
+        public static final boolean SHOOTER_ENABLED = false;
 
-        public static final boolean COMPRESSOR_ENABLED = true;
+        public static final boolean COMPRESSOR_ENABLED = false;
     }
 
     public ClimbSubsystem climbSubsystem;
 
     public DrivebaseSubsystem drivebaseSubsystem;
+    public WPILibDrivebaseSubsystem wpilibdrivebasesubsystem;
 
     public ShooterVisionSubsystem shooterVisionSubsystem;
 
@@ -41,7 +42,8 @@ public class Subsystems implements Loggable {
         boolean comp = Robot.getInstance().isCompetition();
 
         if (DRIVE_ENABLED) {
-            drivebaseSubsystem = new DrivebaseSubsystem();
+            //drivebaseSubsystem = new DrivebaseSubsystem();
+            wpilibdrivebasesubsystem = new WPILibDrivebaseSubsystem();
         }
         if (!comp) {
             return;

@@ -40,7 +40,7 @@ public class ClimbSubsystem extends SubsystemBase implements Loggable {
 
         // Relating to physical climb structure things
         // was previously mid
-        public static final double MID_RUNG_HEIGHT = 5.5;
+        public static final double MID_RUNG_HEIGHT = 5.1;
         public static final double RETRACT_HEIGHT = 0.166;
 
         public static final double CLIMB_OFFSET = 4.75;
@@ -77,6 +77,7 @@ public class ClimbSubsystem extends SubsystemBase implements Loggable {
         motorConfig.supplyCurrLimit = MOTOR_CURRENT_LIMIT;
         motor.configAllSettings(motorConfig);
         motor.setNeutralMode(NeutralMode.Brake);
+        motor.setInverted(true);
 
         setPIDExtend(EXTENSION_P, EXTENSION_I, EXTENSION_D);
         setPIDRetract(RETRACTION_P, RETRACTION_I, RETRACTION_D);
