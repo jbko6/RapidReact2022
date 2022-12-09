@@ -44,6 +44,7 @@ public class Subsystems implements Loggable {
         if (DRIVE_ENABLED) {
             //drivebaseSubsystem = new DrivebaseSubsystem();
             wpilibdrivebasesubsystem = new WPILibDrivebaseSubsystem();
+            System.out.println("");
         }
         if (!comp) {
             return;

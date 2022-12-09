@@ -37,7 +37,7 @@ import frc.team2412.robot.util.MACAddress;
 import frc.team2412.robot.util.autonomous.AutonomousChooser;
 import io.github.oblarg.oblog.Logger;
 
-import com.pathplanner.lib.server.PathPlannerServer;
+//import com.pathplanner.lib.server.PathPlannerServer;
 
 public class Robot extends TimedRobot {
     /**
@@ -138,9 +138,9 @@ public class Robot extends TimedRobot {
         subsystems = new Subsystems();
         controls = new Controls(subsystems);
         if (DRIVE_ENABLED) {
-            updateManager = new UpdateManager(
-                    subsystems.drivebaseSubsystem);
-            updateManager.startLoop(0.011); // 0.005 previously
+            //updateManager = new UpdateManager(
+            //        subsystems.drivebaseSubsystem);
+            //updateManager.startLoop(0.011); // 0.005 previously
         }
         if (DRIVER_VIS_ENABLED) {
             fishCamera = new UsbCamera("Front", Hardware.FISH_CAM);
@@ -224,7 +224,7 @@ public class Robot extends TimedRobot {
         JackStealThreeBallAutoCommand.StealThreeBallConstants.init();
         JackStealThreeBallCompatAutoCommand.StealThreeBallConstants.init();
 
-        PathPlannerServer.startServer(5811);
+        //PathPlannerServer.startServer(5811);
     }
 
     @Override
