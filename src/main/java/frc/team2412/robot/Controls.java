@@ -78,7 +78,7 @@ public class Controls {
 
         boolean comp = Robot.getInstance().isCompetition();
 
-        if (subsystems.drivebaseSubsystem != null) {
+        if (subsystems.wpilibdrivebasesubsystem != null) {
             bindDriveControls();
         }
 
@@ -114,13 +114,13 @@ public class Controls {
     }
 
     public void bindDriveControls() {
-        subsystems.drivebaseSubsystem.setDefaultCommand(new WPILibDriveCommand(subsystems.wpilibdrivebasesubsystem,
+        subsystems.wpilibdrivebasesubsystem.setDefaultCommand(new WPILibDriveCommand(subsystems.wpilibdrivebasesubsystem,
                 driveController.getLeftYAxis(), driveController.getLeftXAxis(),
                 driveController.getRightXAxis()));
-        resetDriveGyroButton.whenPressed(() -> subsystems.drivebaseSubsystem.resetGyroAngle(Rotation2.ZERO));
+        //resetDriveGyroButton.whenPressed(() -> subsystems.wpilibdrivebasesubsystem.resetGyroAngle(Rotation2.ZERO));
 
-        if (!Robot.getInstance().isCompetition())
-            setPoseButton.whenPressed(() -> subsystems.drivebaseSubsystem.setPose());
+        //if (!Robot.getInstance().isCompetition())
+        //    setPoseButton.whenPressed(() -> subsystems.drivebaseSubsystem.setPose());
     }
 
     public void bindIndexControls() {

@@ -28,12 +28,16 @@ public class WPILibDrivebaseSubsystem extends SubsystemBase {
     private final double steerPositionCoefficient = Math.PI * wheelDiameter * steerReduction / ticksPerRotation;
     private final double driveVelocityCoefficient = (Math.PI * wheelDiameter * driveReduction / ticksPerRotation) * 10.0;
 
+
+
     TalonFX[] moduleDriveMotors = {
         new TalonFX(Hardware.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR),
         new TalonFX(Hardware.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR),
         new TalonFX(Hardware.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR),
         new TalonFX(Hardware.DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR)
     };
+
+    TalonFX motor1 = null;
 
     TalonFX[] moduleAngleMotors = {
         new TalonFX(Hardware.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR),
@@ -73,7 +77,10 @@ public class WPILibDrivebaseSubsystem extends SubsystemBase {
         moduleEncoders[0].configMagnetOffset(moduleOffsets[0]);
         moduleEncoders[1].configMagnetOffset(moduleOffsets[1]);
         moduleEncoders[2].configMagnetOffset(moduleOffsets[2]);
-        moduleEncoders[3].configMagnetOffset(moduleOffsets[3]);
+        moduleEncoders[3].configMagnetOffset(moduleOffsets[3]); 
+
+        motor1 = new TalonFX(Hardware.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR);
+        System.out.println(motor1.getSupplyCurrent());
     }
 
     /**
